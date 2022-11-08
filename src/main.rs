@@ -94,10 +94,10 @@ fn main() {
             if answer.trim() == word {
                 println!("Nice! You got it in {tries} tries.");
                 break;
-            } else {
-                println!("Incorrect");
-                tries += 1;
             }
+            println!("Incorrect");
+            tries += 1;
+
         }
 
         // Get the indexes of each occurence of a letter.
