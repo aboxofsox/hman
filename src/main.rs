@@ -1,9 +1,12 @@
 use rand::Rng;
 use regex::Regex;
-use std::io::{self, Write};
 use std::fs;
+use std::io::{self, Write};
+use std::ops::Range;
 
 const MAX_TRIES: usize = 20;
+const VALID_LOWER: Range<u8> = 97..122;
+const VALID_UPPER: Range<u8> = 65..90;
 
 fn main() {
     // Check if the wordlist.txt exists.
@@ -12,9 +15,9 @@ fn main() {
 
     if !wordlist_exists {
         println!("Create a list of words and slap it into wordlist.txt.");
-        return
+        return;
     }
-    
+
     // Regular expression to replace letters with underscores.
     let regx = Regex::new(r"[A-Za-z]").unwrap();
 
@@ -75,14 +78,13 @@ fn main() {
         }
 
         // If the letter hasn't bee guessed, push it to the char vector.
-        if !guessed_letters.contains(&c) && c != '!' {
+        if !guessed_letters.contains(&c) && is_valid(c) {
             guessed_letters.push(c);
         }
 
         // Make the vector a little less ugly to print.
         let guessed_letters_string: String = guessed_letters.iter().collect();
         println!("Guessed: {}\n", guessed_letters_string);
-
 
         // If the word is known, a ! can be used to input the entire word.
         if c == '!' {
@@ -97,7 +99,6 @@ fn main() {
             }
             println!("Incorrect");
             tries += 1;
-
         }
 
         // Get the indexes of each occurence of a letter.
@@ -134,4 +135,10 @@ fn get_indexes(word: &str, character: char) -> Vec<usize> {
     }
 
     indexes
+}
+
+// Return false if the character is not a letter (either upper or lowercase).
+fn is_valid(c: char) -> bool {
+    let c_as_u8 = c as u8;
+    VALID_UPPER.contains(&c_as_u8) || VALID_LOWER.contains(&c_as_u8)
 }
